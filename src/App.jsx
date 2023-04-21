@@ -2,11 +2,14 @@ import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 const style = {
-  bg: `h-screen w-screen p-4 bg-[#2F80ED]`,
-  container: `bg-slate-100 max-w-[500px] w-full m-auto mb-2 rounded-md shadow-x1 p-4`,
-  heading: `text-3x1 font-bold text-center text-gray-800 p-2`,
-  input: `border p-2 w-full text-x1 mb-2`,
-  button: `border p-2 bg-purple-500 text-slate-200`,
+  bg: `min-h-screen  w-screen p-4 bg-[#2F80ED]`,
+  container: `bg-slate-100 max-w-[500px] w-full m-auto mb-2 rounded-md shadow-lg p-4`,
+  heading: `text-center flex-auto text-lg font-semibold text-slate-900`,
+  input: `mb-2 mt-2 focus:ring-6 focus:ring-blue-500 focus:outline-none appearance-none w-full text-sm leading-6 text-slate-900 placeholder-slate-400 rounded-md py-2 pl-5 ring-1 ring-slate-200 shadow-sm`,
+  button: `border p-2 bg-indigo-900 text-slate-200 text-sm hover:bg-indigo-700`,
+  register: `bg-green-900 text-slate-200 hover:bg-green-700`,
+  delete: `bg-red-900 text-slate-200 hover:bg-red-700`,
+  container_input: `p-1 space-x-1 bg-gray-200 my-2 h-10 flex items-center`,
 };
 
 function App() {
@@ -122,29 +125,36 @@ function App() {
         <div>Vazio</div>
       ) : (
         enquetes.map((enquete) => (
-          <div key={enquete.id}>
+          <div key={enquete.id} className={style.container}>
             <form>
-              <h3>{enquete.pergunta}</h3>
+              <h3 className={style.heading}>{enquete.pergunta}</h3>
               {enquete.options.map((option) => (
-                <label key={option.id}>
+                <div key={option.id} className={style.container_input}>
                   <input
+                    id={option.id}
                     type="radio"
                     name={enquete.pergunta}
                     value={option.text}
                     onChange={handleChange}
                   />
-                  {option.text}
-                </label>
+                  <label htmlFor={option.id}>{option.text}</label>
+                </div>
               ))}
-              <button
-                onClick={() => registrarResposta(enquete.id, optionSelected)}
-                type="button"
-              >
-                Enviar resposta
-              </button>
-              <button onClick={() => excluirEnquete(enquete.id)}>
-                Excluir Enquete
-              </button>
+              <div className={style.container_buttons}>
+                <button
+                  className={`${style.button} ${style.register}`}
+                  onClick={() => registrarResposta(enquete.id, optionSelected)}
+                  type="button"
+                >
+                  Enviar resposta
+                </button>
+                <button
+                  className={`${style.button} ${style.delete}`}
+                  onClick={() => excluirEnquete(enquete.id)}
+                >
+                  Excluir Enquete
+                </button>
+              </div>
               <hr />
             </form>
           </div>
