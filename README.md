@@ -5,9 +5,9 @@ A aplicação deve conter quatro funções:
 1. Registrar novas enquetes ✅
 2. Remover enquetes ✅
 3. Registrar uma nova resposta ✅
-4. Exibir contador de respostas
+4. Exibir contador de respostas ✅
 
-5. PLUS: Interface
+5. PLUS: Interface ✅
 6. PLUS: Testes automatizados
 
 const enquete = registrarEnquete({

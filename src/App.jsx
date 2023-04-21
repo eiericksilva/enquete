@@ -1,6 +1,13 @@
 import { useState, useEffect } from "react";
-import "./App.css";
 import { v4 as uuidv4 } from "uuid";
+
+const style = {
+  bg: `h-screen w-screen p-4 bg-[#2F80ED]`,
+  container: `bg-slate-100 max-w-[500px] w-full m-auto mb-2 rounded-md shadow-x1 p-4`,
+  heading: `text-3x1 font-bold text-center text-gray-800 p-2`,
+  input: `border p-2 w-full text-x1 mb-2`,
+  button: `border p-2 bg-purple-500 text-slate-200`,
+};
 
 function App() {
   const [enquetes, setEnquetes] = useState([]);
@@ -12,21 +19,25 @@ function App() {
 
   useEffect(() => {
     console.log("ENQUETES:", enquetes);
-  }, [enquetes]);
+  }, [enquetes, optionSelected]);
 
   const registrarEnquete = (e) => {
     e.preventDefault();
 
     const novaEnquete = {
       id: uuidv4(),
-      textQuestion: pergunta,
+      pergunta,
       options: [
-        { a: alternativaA, count: 0 },
-        { b: alternativaB, count: 0 },
-        { c: alternativaC, count: 0 },
+        { id: uuidv4(), text: alternativaA, count: 0 },
+        { id: uuidv4(), text: alternativaB, count: 0 },
+        { id: uuidv4(), text: alternativaC, count: 0 },
       ],
     };
 
+    const set = new Set([alternativaA, alternativaB, alternativaC]);
+    if (set.size !== 3) {
+      throw new Error("As alternativas devem ser diferentes uma das outras");
+    }
     setEnquetes([...enquetes, novaEnquete]);
 
     setPergunta("");
@@ -43,8 +54,9 @@ function App() {
   };
 
   const registrarResposta = (id, response) => {
-    console.log(id);
-    console.log(response);
+    const enquete = enquetes.find((enquete) => enquete.id === id);
+    const res = enquete.options.find((option) => option.text === response);
+    res.count++;
   };
 
   const handleChange = (e) => {
@@ -52,71 +64,76 @@ function App() {
   };
 
   return (
-    <div>
-      <h2>Agora vai</h2>
-      <button>Criar Enquente</button>
-      <button>Remover Enquente</button>
-      <button>Registrar Resposta</button>
-      <button>Mostrar Respostas</button>
+    <div className={style.bg}>
+      <h3 className={style.heading}>Gestão de Enquetes</h3>
       <hr />
       <br />
-      <form>
-        <label>
-          Insira a pergunta:
-          <input
-            onChange={(e) => setPergunta(e.target.value)}
-            value={pergunta}
-            type="text"
-          />
-        </label>
-        <p>Insira 3 alternativas</p>
+      <div className={style.container}>
+        <form>
+          <label>
+            Pergunta:
+            <input
+              className={style.input}
+              onChange={(e) => setPergunta(e.target.value)}
+              value={pergunta}
+              type="text"
+              placeholder="Insira sua pergunta"
+            />
+          </label>
+          <p>Alternativas:</p>
 
-        <label>
-          a:
-          <input
-            type="text"
-            onChange={(e) => setAlternativaA(e.target.value)}
-            value={alternativaA}
-          />
-        </label>
-        <label>
-          b:
-          <input
-            type="text"
-            onChange={(e) => setAlternativaB(e.target.value)}
-            value={alternativaB}
-          />
-        </label>
-        <label>
-          c:
-          <input
-            type="text"
-            onChange={(e) => setAlternativaC(e.target.value)}
-            value={alternativaC}
-          />
-        </label>
-        <button type="submit" onClick={registrarEnquete}>
-          Registrar Enquete
-        </button>
-      </form>
-
-      <hr />
+          <label>
+            <input
+              className={style.input}
+              type="text"
+              onChange={(e) => setAlternativaA(e.target.value)}
+              value={alternativaA}
+              placeholder="Insira a alternativa A"
+            />
+          </label>
+          <label>
+            <input
+              className={style.input}
+              type="text"
+              onChange={(e) => setAlternativaB(e.target.value)}
+              value={alternativaB}
+              placeholder="Insira a alternativa B"
+            />
+          </label>
+          <label>
+            <input
+              className={style.input}
+              type="text"
+              onChange={(e) => setAlternativaC(e.target.value)}
+              value={alternativaC}
+              placeholder="Insira a alternativa C"
+            />
+          </label>
+          <button
+            className={style.button}
+            type="submit"
+            onClick={registrarEnquete}
+          >
+            Registrar Enquete
+          </button>
+        </form>
+      </div>
       {enquetes.length < 1 ? (
         <div>Vazio</div>
       ) : (
         enquetes.map((enquete) => (
           <div key={enquete.id}>
             <form>
-              <h3>{enquete.textQuestion}</h3>
+              <h3>{enquete.pergunta}</h3>
               {enquete.options.map((option) => (
-                <label>
+                <label key={option.id}>
                   <input
                     type="radio"
-                    name={enquete.textQuestion}
-                    value={option.a || option.b || option.c}
+                    name={enquete.pergunta}
+                    value={option.text}
                     onChange={handleChange}
                   />
-                  {option.a || option.b || option.c}
+                  {option.text}
                 </label>
               ))}
               <button
