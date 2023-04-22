@@ -19,6 +19,7 @@ function App() {
   const [alternativaB, setAlternativaB] = useState("");
   const [alternativaC, setAlternativaC] = useState("");
   const [optionSelected, setOptionSelected] = useState("");
+  const [enqueteSelected, setEnqueteSelected] = useState("");
 
   useEffect(() => {
     console.log("ENQUETES:", enquetes);
@@ -72,6 +73,16 @@ function App() {
       <hr />
       <br />
       <div className={style.container}>
+        <select
+          className={style.input}
+          onChange={(e) => setEnqueteSelected(e.target.value)}
+        >
+          {enquetes.map((enquete) => (
+            <option value={enquete.pergunta}>{enquete.pergunta}</option>
+          ))}
+        </select>
+      </div>
+      <div className={style.container}>
         <form>
           <label>
             Pergunta:
@@ -84,7 +95,6 @@ function App() {
             />
           </label>
           <p>Alternativas:</p>
-
           <label>
             <input
               className={style.input}
@@ -137,7 +147,9 @@ function App() {
                     value={option.text}
                     onChange={handleChange}
                   />
-                  <label htmlFor={option.id}>{option.text}</label>
+                  <label
+                    htmlFor={option.id}
+                  >{`${option.text} - ${option.count}`}</label>
                 </div>
               ))}
               <div className={style.container_buttons}>
