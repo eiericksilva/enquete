@@ -1,4 +1,6 @@
 
+Desafio criado pelo Rodrigo Lima durante sua mentoria para trabalhar com a linguagem de programação JavaScript.
+
 O desafio consiste em criar uma aplicação de enquete.
 A aplicação deve conter quatro funções:
 
