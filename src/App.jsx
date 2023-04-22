@@ -10,6 +10,7 @@ const style = {
   register: `bg-green-900 text-slate-200 hover:bg-green-700`,
   delete: `bg-red-900 text-slate-200 hover:bg-red-700`,
   container_input: `p-1 space-x-1 bg-gray-200 my-2 h-10 flex items-center`,
+  container_count: `p-1 space-x-1 bg-gray-200 my-2 h-10 flex justify-between`,
 };
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
   const [alternativaC, setAlternativaC] = useState("");
   const [optionSelected, setOptionSelected] = useState("");
   const [enqueteSelected, setEnqueteSelected] = useState("");
+  const [showCounts, setShowCounts] = useState("");
 
   useEffect(() => {
     console.log("ENQUETES:", enquetes);
@@ -73,9 +75,21 @@ function App() {
       <hr />
       <br />
       <div className={style.container}>
+        <h4>Escolha a enquete em que deseja votar:</h4>
         <select
           className={style.input}
           onChange={(e) => setEnqueteSelected(e.target.value)}
+        >
+          {enquetes.map((enquete) => (
+            <option value={enquete.pergunta}>{enquete.pergunta}</option>
+          ))}
+        </select>
+      </div>
+      <div className={style.container}>
+        <h4>Escolha a enquete para verificar quantidade de votos.</h4>
+        <select
+          className={style.input}
+          onChange={(e) => setShowCounts(e.target.value)}
         >
           {enquetes.map((enquete) => (
             <option value={enquete.pergunta}>{enquete.pergunta}</option>
@@ -131,10 +145,9 @@ function App() {
           </button>
         </form>
       </div>
-      {enquetes.length < 1 ? (
-        <div>Vazio</div>
-      ) : (
-        enquetes.map((enquete) => (
+      {enquetes
+        .filter((enquete) => enquete.pergunta === enqueteSelected)
+        .map((enquete) => (
           <div key={enquete.id} className={style.container}>
             <form>
               <h3 className={style.heading}>{enquete.pergunta}</h3>
@@ -147,9 +160,7 @@ function App() {
                     value={option.text}
                     onChange={handleChange}
                   />
-                  <label
-                    htmlFor={option.id}
-                  >{`${option.text} - ${option.count}`}</label>
+                  <label htmlFor={option.id}>{option.text} </label>
                 </div>
               ))}
               <div className={style.container_buttons}>
@@ -170,8 +181,22 @@ function App() {
               <hr />
             </form>
           </div>
-        ))
-      )}
+        ))}
+      {enquetes
+        .filter((enquete) => enquete.pergunta === showCounts)
+        .map((enquete) => (
+          <div key={enquete.id} className={style.container}>
+            <h3
+              className={style.heading}
+            >{`Quantidade de votos para: ${enquete.pergunta}`}</h3>
+            {enquete.options.map((option) => (
+              <div key={option.id} className={style.container_count}>
+                <h1>{option.text}</h1>
+                <span>{option.count}</span>
+              </div>
+            ))}
+          </div>
+        ))}
     </div>
   );
 }
