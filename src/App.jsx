@@ -24,10 +24,6 @@ function App() {
   const [showCounts, setShowCounts] = useState("");
   const [page, setPage] = useState("create");
 
-  useEffect(() => {
-    console.log("ENQUETES:", enquetes);
-  }, [enquetes, optionSelected, showCounts]);
-
   const registrarEnquete = (e) => {
     e.preventDefault();
 
@@ -61,9 +57,13 @@ function App() {
   };
 
   const registrarResposta = (id, response) => {
-    const enquete = enquetes.find((enquete) => enquete.id === id);
-    const res = enquete.options.find((option) => option.text === response);
-    res.count++;
+    const indexDaEnquete = enquetes.findIndex((enquete) => enquete.id === id);
+    const indexDaOpcao = enquetes[indexDaEnquete].options.findIndex(
+      (option) => option.text === response
+    );
+    const copiaEnquetes = [...enquetes];
+    copiaEnquetes[indexDaEnquete].options[indexDaOpcao].count++;
+    setEnquetes(copiaEnquetes);
   };
 
   const handleChange = (e) => {
@@ -126,9 +126,11 @@ function App() {
               </button>
             </form>
           </div>
-          <button className={style.button} onClick={() => setPage("view")}>
-            Próxima página
-          </button>
+          <div className="text-center">
+            <button className={style.button} onClick={() => setPage("view")}>
+              Próxima página
+            </button>
+          </div>
         </>
       ) : (
         <div className="flex justify-around">
@@ -139,6 +141,9 @@ function App() {
                 className={style.input}
                 onChange={(e) => setEnqueteSelected(e.target.value)}
               >
+                <option disabled selected>
+                  Selecione uma opção
+                </option>
                 {enquetes.map((enquete) => (
                   <option value={enquete.pergunta}>{enquete.pergunta}</option>
                 ))}
@@ -150,6 +155,9 @@ function App() {
                 className={style.input}
                 onChange={(e) => setShowCounts(e.target.value)}
               >
+                <option disabled selected>
+                  Selecione uma opção
+                </option>
                 {enquetes.map((enquete) => (
                   <option value={enquete.pergunta}>{enquete.pergunta}</option>
                 ))}
