@@ -22,10 +22,11 @@ function App() {
   const [optionSelected, setOptionSelected] = useState("");
   const [enqueteSelected, setEnqueteSelected] = useState("");
   const [showCounts, setShowCounts] = useState("");
+  const [page, setPage] = useState("create");
 
   useEffect(() => {
     console.log("ENQUETES:", enquetes);
-  }, [enquetes, optionSelected]);
+  }, [enquetes, optionSelected, showCounts]);
 
   const registrarEnquete = (e) => {
     e.preventDefault();
@@ -74,129 +75,148 @@ function App() {
       <h3 className={style.heading}>Gestão de Enquetes</h3>
       <hr />
       <br />
-      <div className={style.container}>
-        <h4>Escolha a enquete em que deseja votar:</h4>
-        <select
-          className={style.input}
-          onChange={(e) => setEnqueteSelected(e.target.value)}
-        >
-          {enquetes.map((enquete) => (
-            <option value={enquete.pergunta}>{enquete.pergunta}</option>
-          ))}
-        </select>
-      </div>
-      <div className={style.container}>
-        <h4>Escolha a enquete para verificar quantidade de votos.</h4>
-        <select
-          className={style.input}
-          onChange={(e) => setShowCounts(e.target.value)}
-        >
-          {enquetes.map((enquete) => (
-            <option value={enquete.pergunta}>{enquete.pergunta}</option>
-          ))}
-        </select>
-      </div>
-      <div className={style.container}>
-        <form>
-          <label>
-            Pergunta:
-            <input
-              className={style.input}
-              onChange={(e) => setPergunta(e.target.value)}
-              value={pergunta}
-              type="text"
-              placeholder="Insira sua pergunta"
-            />
-          </label>
-          <p>Alternativas:</p>
-          <label>
-            <input
-              className={style.input}
-              type="text"
-              onChange={(e) => setAlternativaA(e.target.value)}
-              value={alternativaA}
-              placeholder="Insira a alternativa A"
-            />
-          </label>
-          <label>
-            <input
-              className={style.input}
-              type="text"
-              onChange={(e) => setAlternativaB(e.target.value)}
-              value={alternativaB}
-              placeholder="Insira a alternativa B"
-            />
-          </label>
-          <label>
-            <input
-              className={style.input}
-              type="text"
-              onChange={(e) => setAlternativaC(e.target.value)}
-              value={alternativaC}
-              placeholder="Insira a alternativa C"
-            />
-          </label>
-          <button
-            className={style.button}
-            type="submit"
-            onClick={registrarEnquete}
-          >
-            Registrar Enquete
-          </button>
-        </form>
-      </div>
-      {enquetes
-        .filter((enquete) => enquete.pergunta === enqueteSelected)
-        .map((enquete) => (
-          <div key={enquete.id} className={style.container}>
+      {page === "create" ? (
+        <>
+          <div className={style.container}>
             <form>
-              <h3 className={style.heading}>{enquete.pergunta}</h3>
-              {enquete.options.map((option) => (
-                <div key={option.id} className={style.container_input}>
-                  <input
-                    id={option.id}
-                    type="radio"
-                    name={enquete.pergunta}
-                    value={option.text}
-                    onChange={handleChange}
-                  />
-                  <label htmlFor={option.id}>{option.text} </label>
-                </div>
-              ))}
-              <div className={style.container_buttons}>
-                <button
-                  className={`${style.button} ${style.register}`}
-                  onClick={() => registrarResposta(enquete.id, optionSelected)}
-                  type="button"
-                >
-                  Enviar resposta
-                </button>
-                <button
-                  className={`${style.button} ${style.delete}`}
-                  onClick={() => excluirEnquete(enquete.id)}
-                >
-                  Excluir Enquete
-                </button>
-              </div>
-              <hr />
+              <label>
+                Pergunta:
+                <input
+                  className={style.input}
+                  onChange={(e) => setPergunta(e.target.value)}
+                  value={pergunta}
+                  type="text"
+                  placeholder="Insira sua pergunta"
+                />
+              </label>
+              <p>Alternativas:</p>
+              <label>
+                <input
+                  className={style.input}
+                  type="text"
+                  onChange={(e) => setAlternativaA(e.target.value)}
+                  value={alternativaA}
+                  placeholder="Insira a alternativa A"
+                />
+              </label>
+              <label>
+                <input
+                  className={style.input}
+                  type="text"
+                  onChange={(e) => setAlternativaB(e.target.value)}
+                  value={alternativaB}
+                  placeholder="Insira a alternativa B"
+                />
+              </label>
+              <label>
+                <input
+                  className={style.input}
+                  type="text"
+                  onChange={(e) => setAlternativaC(e.target.value)}
+                  value={alternativaC}
+                  placeholder="Insira a alternativa C"
+                />
+              </label>
+              <button
+                className={style.button}
+                type="submit"
+                onClick={registrarEnquete}
+              >
+                Registrar Enquete
+              </button>
             </form>
           </div>
-        ))}
-      {enquetes
-        .filter((enquete) => enquete.pergunta === showCounts)
-        .map((enquete) => (
-          <div key={enquete.id} className={style.container}>
-            <h3
-              className={style.heading}
-            >{`Quantidade de votos para: ${enquete.pergunta}`}</h3>
-            {enquete.options.map((option) => (
-              <div key={option.id} className={style.container_count}>
-                <h1>{option.text}</h1>
-                <span>{option.count}</span>
-              </div>
-            ))}
+          <button className={style.button} onClick={() => setPage("view")}>
+            Próxima página
+          </button>
+        </>
+      ) : (
+        <div className="flex justify-around">
+          <div>
+            <div className={style.container}>
+              <h4>Escolha a enquete em que deseja votar:</h4>
+              <select
+                className={style.input}
+                onChange={(e) => setEnqueteSelected(e.target.value)}
+              >
+                {enquetes.map((enquete) => (
+                  <option value={enquete.pergunta}>{enquete.pergunta}</option>
+                ))}
+              </select>
+            </div>
+            <div className={style.container}>
+              <h4>Escolha a enquete para verificar quantidade de votos.</h4>
+              <select
+                className={style.input}
+                onChange={(e) => setShowCounts(e.target.value)}
+              >
+                {enquetes.map((enquete) => (
+                  <option value={enquete.pergunta}>{enquete.pergunta}</option>
+                ))}
+              </select>
+            </div>
+            <button className={style.button} onClick={() => setPage("create")}>
+              Página Anterior
+            </button>
           </div>
-        ))}
+          <div>
+            {enquetes
+              .filter((enquete) => enquete.pergunta === enqueteSelected)
+              .map((enquete) => (
+                <div key={enquete.id} className={style.container}>
+                  <form>
+                    <h3 className={style.heading}>{enquete.pergunta}</h3>
+                    {enquete.options.map((option) => (
+                      <div key={option.id} className={style.container_input}>
+                        <input
+                          id={option.id}
+                          type="radio"
+                          name={enquete.pergunta}
+                          value={option.text}
+                          onChange={handleChange}
+                        />
+                        <label htmlFor={option.id}>{option.text} </label>
+                      </div>
+                    ))}
+                    <div className={style.container_buttons}>
+                      <button
+                        className={`${style.button} ${style.register}`}
+                        onClick={() =>
+                          registrarResposta(enquete.id, optionSelected)
+                        }
+                        type="button"
+                      >
+                        Enviar resposta
+                      </button>
+                      <button
+                        className={`${style.button} ${style.delete}`}
+                        onClick={() => excluirEnquete(enquete.id)}
+                      >
+                        Excluir Enquete
+                      </button>
+                    </div>
+                    <hr />
+                  </form>
+                </div>
+              ))}
+            {enquetes
+              .filter((enquete) => enquete.pergunta === showCounts)
+              .map((enquete) => (
+                <div key={enquete.id} className={style.container}>
+                  <h3
+                    className={style.heading}
+                  >{`Quantidade de votos para: ${enquete.pergunta}`}</h3>
+                  {enquete.options.map((option) => (
+                    <div key={option.id} className={style.container_count}>
+                      <h1>{option.text}</h1>
+                      <span>{option.count}</span>
+                    </div>
+                  ))}
+                </div>
+              ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
