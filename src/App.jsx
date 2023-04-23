@@ -133,7 +133,7 @@ function App() {
           </div>
         </>
       ) : (
-        <div className="flex justify-around">
+        <div className="flex justify-around flex-wrap">
           <div>
             <div className={style.container}>
               <h4>Escolha a enquete em que deseja votar:</h4>
